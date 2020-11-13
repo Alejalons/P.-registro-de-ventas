@@ -2,13 +2,13 @@
 
 @section('content')
    
-<div class="container">   
+<div id="content" class="container">   
     <div id="registro" class="registro w-100">
         <div class="row  justify-content-between" >
             <div class="col-11 col-md-6  my-lg-5 ml-lg-5 ml-3 mb-5">
                 <div class="card rounded-0">
                     <div class="card-header bg-grey">
-                        <h6 class="font-weight-bold mb-0">Registro de Usuarios</h6>
+                        <h6 class="font-weight-bold mb-0">Modificación de Usuarios</h6>
                     </div>
                     <div class="card-body">
                             <form action="{{ route('user.update', $user) }}" method="post" enctype="multipart/form-data">

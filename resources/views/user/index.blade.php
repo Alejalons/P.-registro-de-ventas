@@ -1,38 +1,28 @@
+@extends('layouts.app')
 
-listado de usuarios
-<table>
-<thead class="thead-light">
-            <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
+@section('content')
+   
+<div class="container"> 
 
-        <tbody>
-            @foreach($users as $user)
-                <tr>
-                    <td>{{$loop -> iteration}}</td>
+    @foreach($users as $user)
+        <div class="card col-3">
+            <div class="card-header">
+                {{ implode(', ', $user -> roles() -> get() -> pluck('name')->toArray()) }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{$user -> name}}</h5>
+                <p class="card-text">{{$user -> email}}</p>
+                <a class="btn btn-warning" href="{{  url('user/'.$user -> id.'/edit')  }}">Edit</a>
+                            | 
+                <form action="{{ route('user.destroy', $user) }}" method="post">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE')}}   
 
-                    <td>{{$user -> name}}</td>
-                    <td>{{$user -> email}}</td>
-                    <!-- //obtiene el valor de las uniones de las dos tablas -->
-                    <td>{{ implode(', ', $user -> roles() -> get() -> pluck('name')->toArray()) }}</td>
-                    <td>
-                        <a class="btn btn-warning" href="{{  url('user/'.$user -> id.'/edit')  }}">Edit</a>
-                    | 
-                        <form action="{{ route('user.destroy', $user) }}" method="post">
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE')}}   
-
-                           <button type="submit" class="btn btn-danger" onclick="return confirm('borar??');" >Borrar</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-
-        </tbody>
-
-</table>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('borar??');" >Borrar</button>
+                </form>
+            </div>
+        </div>
+    @endforeach
+    
+</div>
+@endsection      

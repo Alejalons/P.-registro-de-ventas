@@ -1,0 +1,82 @@
+body {
+  background: url("../img/bg.jpg");
+  background-size: 110vw 100vh;
+  background-repeat: no-repeat;
+  overflow-x: hidden;
+  overflow-y: hidden; }
+
+.get_in_touch {
+  max-width: 800px;
+  margin: 50px auto;
+  position: relative;
+  box-shadow: 0 10px 30px 0px rgba(0, 0, 0, 0.1);
+  padding: 30px; }
+  .get_in_touch .title {
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 3px;
+    font-size: 3em;
+    line-height: 48px;
+    padding-bottom: 20px;
+    color: #5534ca;
+    background: linear-gradient(to right, #f4524d 0%, #554eca 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; }
+
+.contact-form .form-field {
+  position: relative;
+  margin: 32px 0; }
+.contact-form .input-text {
+  display: block;
+  width: 100%;
+  height: 36px;
+  border-width: 0 0 2px 0;
+  border-color: #ffffff;
+  font-size: 18px;
+  line-height: 26px;
+  color: #fff;
+  font-weight: 400;
+  background: rgba(17, 34, 59, 0);
+  outline: none; }
+  /* .contact-form .input-text:focus + .label, .contact-form .input-text:focus.not-empty + label {
+    transform: translateY(-24px); }
+  .contact-form .input-text:focus {
+    outline: none; }*/
+  .contact-form .input-text:-webkit-autofill, .contact-form .input-text:-webkit-autofill:hover, .contact-form .input-text:-webkit-autofill:focus, .contact-form .input-text:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #fff !important; } 
+.contact-form .label {
+  position: relative;
+  left: 20px;
+  /* bottom: 15px; */
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+  color: #ffffff;
+  cursor: text;
+  text-transform: capitalize;
+  transition: transform 0.2s ease-in-out; }
+.contact-form .submit-btn {
+  display: inline-block;
+  background-image: linear-gradient(125deg, #a72879, #064497);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 16px;
+  padding: 8px 16px;
+  border: none;
+  width: 200px;
+  cursor: pointer;
+  border-radius: 100px; }
+
+.formulario {
+  height: 100vh; }
+
+#registro {
+  margin-bottom: 16px; }
+
+@media screen and (max-width: 464px) {
+  body {
+    background: url("../img/bg-mobile.jpg"); } }
+
+/*# sourceMappingURL=login.css.map */
