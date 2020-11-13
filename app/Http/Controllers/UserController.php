@@ -20,7 +20,6 @@ class UserController extends Controller
     {
         $users = User::all();
         return view('user.index') -> with('users', $users);
-
     }
 
     /**
@@ -30,7 +29,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        $role = Role::all();
+        return view('user.create', compact('role'));
     }
     // protected function validator(array $data)
     // {
@@ -100,10 +100,10 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $nameRole = implode(', ', $user -> roles() -> get() -> pluck('name')->toArray());
-        // dd($nameRole);
+        $role = Role::all();
+        $nameRole = implode(', ', $user -> roles() -> get() -> pluck('description')->toArray());
 
-        return view('user.edit', compact('empleado')) ;
+        return view('user.edit', compact(['user', 'nameRole', 'role'])) ;
 
     }
 
@@ -114,9 +114,34 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        
+        //   Validaciones
+        $validation=[
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ];
+        $Mensaje = ["required" => 'El :attribute es requerido'];
+        $this->validate($request, $validation, $Mensaje);
+
+        //captura datos
+        $dataUser = request() -> except(['_token', '_method']);
+
+        // //actualiza datos de usuarios   
+        $user -> roles() -> sync( $dataUser['role']);
+        $user -> name = $dataUser['name'];
+        $user -> email =  $dataUser['email'];
+        $user -> password = Hash::make($dataUser['password']);
+        $user ->  save();
+
+        $ModifiedUser = User::findOrFail($user -> id);
+
+        // return response() -> json($request);
+        // return view('user.edit', compact($ModifiedUser));
+        return redirect('user');
+
     }
 
     /**
@@ -125,8 +150,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        // dd($user);
+
+        $user -> roles() -> detach();
+        $user -> delete();
+
+        return redirect('user');
     }
 }

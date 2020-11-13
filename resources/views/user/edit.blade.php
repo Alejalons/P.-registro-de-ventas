@@ -1,21 +1,35 @@
-Editar Usuarios
-<form action="" method="post" enctype="multipart/form-data">
+@extends('layouts.app')
+
+@section('content')
    
-    
+<div class="container">   
+    <div id="registro" class="registro w-100">
+        <div class="row  justify-content-between" >
+            <div class="col-11 col-md-6  my-lg-5 ml-lg-5 ml-3 mb-5">
+                <div class="card rounded-0">
+                    <div class="card-header bg-grey">
+                        <h6 class="font-weight-bold mb-0">Registro de Usuarios</h6>
+                    </div>
+                    <div class="card-body">
+                            <form action="{{ route('user.update', $user) }}" method="post" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH')}}                                  
 
-    <input id="name" type="text" class="form-control " name="name" value="{{ old('name') }}">
-    <input id="email" type="email" class="form-control " name="email" value="" >
-    <input id="password" type="password" class="form-control"  name="password" >
-    <input id="password-confirm" type="password" class="form-control " name="password_confirmation" >
+                                @include('user.form', ['FORM' => 'edit'])
 
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="role" id="option1" value="1" autocomplete="off" checked> Administrador
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="role" id="option2" value="2" autocomplete="off"> Ventas
-        </label>
+                                    <!-- @foreach($role as $rol)
+
+                                        <label class="btn btn-secondary">
+                                            <input type="radio" name="role" id="option1" value="{{$rol -> id}}" @if ( $rol -> description == $nameRole )  checked  @endif />{{$rol -> description}}
+                                        </label> 
+                                        
+                                    @endforeach -->
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>            
     </div>
-    <input type="submit" value="Crear">
 
-</form>
+</div>
+@endsection   

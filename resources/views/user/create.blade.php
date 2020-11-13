@@ -1,31 +1,27 @@
-Creacion de usuario
+@extends('layouts.app')
 
-<form action="{{ url('user') }}" method="post" enctype="multipart/form-data">
-    {{ csrf_field() }}
-    
-    @if(count($errors) > 0)
-        <div class="alert alert-danger" role="alert">
-            <ul>
-                @foreach($errors -> all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <input id="name" type="text" class="form-control " name="name" value="{{ old('name') }}">
-    <input id="email" type="email" class="form-control " name="email" value="" >
-    <input id="password" type="password" class="form-control"  name="password" >
-    <input id="password-confirm" type="password" class="form-control " name="password_confirmation" >
-
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="role" id="option1" value="1" autocomplete="off" checked> Administrador
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="role" id="option2" value="2" autocomplete="off"> Ventas
-        </label>
+@section('content')
+   
+<div class="container">   
+    <div id="registro" class="registro w-100">
+        <div class="row  justify-content-between" >
+            <div class="col-11 col-md-6  my-lg-5 ml-lg-5 ml-3 mb-5">
+                <div class="card rounded-0">
+                    <div class="card-header bg-grey">
+                        <h6 class="font-weight-bold mb-0">Registro de Usuarios</h6>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url('user') }}" method="post" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            
+                            @include('user.form', ['FORM' => 'create'])
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>            
     </div>
-    <input type="submit" value="Crear">
 
-</form>
+</div>
+@endsection       

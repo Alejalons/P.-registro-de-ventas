@@ -23,7 +23,12 @@ listado de usuarios
                     <td>
                         <a class="btn btn-warning" href="{{  url('user/'.$user -> id.'/edit')  }}">Edit</a>
                     | 
-                        <button type="submit" class="btn btn-danger" >Borrar</button>
+                        <form action="{{ route('user.destroy', $user) }}" method="post">
+                            {{ csrf_field() }}
+                            {{ method_field('DELETE')}}   
+
+                           <button type="submit" class="btn btn-danger" onclick="return confirm('borar??');" >Borrar</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
