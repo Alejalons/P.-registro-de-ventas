@@ -61,6 +61,6 @@
                 </div>
             </div>
         </div>     
-        <input class="btn btn-primary w-100" type="submit" value="{{$FORM == 'edit' ? 'Modificar' : 'Guardar'}}"/>
+        <input class="btn  w-100" type="submit" style="background: rgb(241,163,19);" value="{{$FORM == 'edit' ? 'Modificar' : 'Guardar'}}"/>
 
                  

@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-   
+
+<div class="col-12 d-flex justify-content-start">
+    <a href="{{ url('user/') }}"  class="btn btn-primary">Usuarios</a>
+</div>   
 <div class="container">   
     <div id="registro" class="registro w-100">
         <div class="row  justify-content-between" >
