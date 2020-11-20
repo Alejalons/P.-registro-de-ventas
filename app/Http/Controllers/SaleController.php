@@ -2,28 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Models\Models;
 use App\Models\Set;
+use App\Models\User;
 use App\Models\Sale;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Datebase\Eloquent\ModelNotFoundException;
+use Illuminate\Datebase\Eloquent\RelationNotFoundException;
+
 
 class SaleController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth');        
+
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $models = Models::all();
-        return view('sale.index', compact('models'));
+        try {
+            
+            
+            if(Auth::user()->isAdministrator()){                
+                $ventas = Sale::all();
+            }
+            else
+            {
+                $ventas = Sale::select()
+                    ->where('users_id', '=', auth()->id())
+                    ->get();               
+            }
+
+           
+            //inicializa array                
+            $products = [];
+
+            foreach ($ventas as $venta){
+                $products = $ventas->find($venta -> id);
+                
+                
+                // array_push($product, )
+                //obtengo datos unidos a las ventas
+                $products_name = [];
+                foreach($products -> product  as $product){        
+
+                    //obtener id asociado a los producto
+                    $id_models=$product->models_id;
+                    $id_set=$product->set_id;
+                    
+                    //busca objeto asociado al id enviado
+                    $models = Models::find($id_models);
+                    $sets = Set::find($id_set);                
+
+                    //encuentra nombre
+                    array_push($products_name, $models['name'].' - '.$sets['name']);
+                }
+                $products->productoNombre =  $products_name;
+
+            }
+        } catch (\Throwable $th) {
+            return back()->withError($th->getMessage() )->withInput();
+        
+        } catch (\ModelNotFoundException $ex) {
+            return back()->withError($ex->getMessage())->withInput();
+        
+        } catch (\RelationNotFoundException $ex) {
+            return back()->withError($ex->getMessage() )->withInput();
+        }
+           
+       // return view('sale.index' , compact('ventas')) ;
+        
+          return response() -> json($ventas);        
     }
 
     /**
@@ -33,7 +90,8 @@ class SaleController extends Controller
      */
     public function create()
     {
-        //
+        
+        return view('sale.create');
     }
 
     /**
@@ -44,45 +102,55 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        
-          //Validaciones
-          $campos=[
-            'cliente' => ['required', 'string', 'max:191'],
-            'direcccion' => ['required', 'string', 'max:191'],
-            'contacto' => ['required', 'string', 'max:14'],
-            'contact2' => ['max:14'],
-            'rut' => ['required', 'string', 'max:13'],
-            'mail' => ['required', 'string','email', 'max:191'],
-            'price' => ['required', 'string', 'max:11'],
-            'dispatchPrice' => ['required', 'string', 'max:11'],
-            'producto' => ['required']
-        ];
-        $Mensaje = ["required" => 'Es requerido'];
-        $this->validate($request, $campos, $Mensaje);
+        try {
+            // return response()->json($request);
+            //Validaciones
+            $campos=[
+                'cliente' => ['required', 'string', 'max:191'],
+                'direccion' => ['required', 'string', 'max:191'],
+                'contacto' => ['required', 'string', 'max:14'],
+                'contact2' => ['max:14'],
+                'rut' => ['required', 'string', 'max:13'],
+                'mail' => ['required', 'string','email', 'max:191'],
+                'price' => ['required', 'string', 'max:11'],
+                'dispatchPrice' => ['required', 'string', 'max:11'],
+                'producto' => ['required']
+            ];
+            $Mensaje = ["required" => 'Es requerido'];
+            $this->validate($request, $campos, $Mensaje);
 
-
-        $data = request()->except('_token');
-        $product = Sale::create([
-            'nameClient' => $data['cliente'],
-            'address' => $data['direcccion'],
-            'contact' => $data['contacto'],
-            'contactSecond' => $data['contact2'],
-            'rut' => $data['rut'],
-            'mail' => $data['mail'],
-            'paymentMethod' => $data['tipo-pago'],
-            'status' => $data['status'],
-            'price' => str_replace(array('.', ','), '' , $data['price']),
-            'dispatchPrice' => str_replace(array('.', ','), '' , $data['dispatchPrice']),
-            'users_id' => auth()->id()
-        ]);
-
-        for ($i=0; $i < count($data['producto']) ; $i++) {            
+            //obtengo datos exceptuando el token enviado por request
+            $data = request()->except('_token');
+            //creacion
+            $product = Sale::create([
+                'nameClient' => $data['cliente'],
+                'address' => $data['direccion'],
+                'contact' => $data['contacto'],
+                'contactSecond' => $data['contact2'],
+                'rut' => $data['rut'],
+                'mail' => $data['mail'],
+                'paymentMethod' => $data['tipo-pago'],
+                'status' => $data['status'],
+                'price' => str_replace(array('.', ','), '' , $data['price']),
+                'dispatchPrice' => str_replace(array('.', ','), '' , $data['dispatchPrice']),
+                'users_id' => auth()->id()
+            ]);
             
-            $product->product()->attach(Product::where('id', $data['producto'][$i])->first());
-        }
+            // inserta todos los id entregados por el array de productos
+            for ($i=0; $i < count($data['producto']) ; $i++) 
+            {            
+                //inserta en sale_product id de la venta mas id de los productos
+                $product->product()->attach(Product::where('id', $data['producto'][$i])->first());
+            }
         
+        } catch (\ModelNotFoundException $ex) {
+            return back()->withError($ex->getMessage())->withInput();
+        
+        } catch (\RelationNotFoundException $ex) {
+            return back()->withError($ex->getMessage() )->withInput();
+        }
         // return response()->json($request);
-        return view('home') -> with('MensajeCreacion', 'Venta creada con exito');
+        return redirect('sale') -> with('MensajeCreacion', 'Venta creada con exito');
 
     }
 
@@ -105,39 +173,52 @@ class SaleController extends Controller
      */
     public function edit($id)
     {
-        
-        //consulto ventas
-        $ventas = Sale::select()
-                ->where('id', '=', $id)
-                ->get();
-               
-        //inicializa array                
-        $products = [];
+        try {
 
-        foreach ($ventas as $venta){
-            $products = $ventas->find($venta -> id);
-            
-            // array_push($product, )
-            //obtengo datos unidos a las ventas
-            $products_name = [];
-            foreach($products -> product  as $product){        
-
-                //obtener id asociado a los producto
-                $id_models=$product->models_id;
-                $id_set=$product->set_id;
+            //consulto ventas
+            $ventas = Sale::select()
+                    ->where('id', '=', $id)
+                    ->get();
                 
-                //busca objeto asociado al id enviado
-                $models = Models::find($id_models);
-                $sets = Set::find($id_set);                
+            //inicializa array                
+            $products = [];
 
-                //encuentra nombre
-                array_push($products_name, $models['name'].' - '.$sets['name']);
+            foreach ($ventas as $venta){
+                $products = $ventas->find($venta -> id);
+                
+                // array_push($product, )
+                //obtengo datos unidos a las ventas
+                $products_name = [];
+                foreach($products -> product  as $product){        
+
+                    //obtener id asociado a los producto
+                    $id_models=$product->models_id;
+                    $id_set=$product->set_id;
+                    
+                    //busca objeto asociado al id enviado
+                    $models = Models::find($id_models);
+                    $sets = Set::find($id_set);                
+
+                    //encuentra nombre
+                    array_push($products_name, $models['name'].' - '.$sets['name']);
+                }
+                $products->productoNombre =  $products_name;
+
             }
-            $products->productoNombre =  $products_name;
+            
+            $venta = $ventas[0];
+        } catch (\Throwable $th) {
 
-        }
+            return back()->withError($th->getMessage() )->withInput();   
+
+        } catch (\ModelNotFoundException $ex) {
+
+            return back()->withError($ex->getMessage())->withInput();
         
-        $venta = $ventas[0];
+        } catch (\RelationNotFoundException $ex) {
+            return back()->withError($ex->getMessage() )->withInput();
+        }
+
         // return response() -> json($venta);  
         return view('sale.edit', compact('venta')) ;
     }
@@ -151,55 +232,56 @@ class SaleController extends Controller
      */
     public function update(Request $request,  $id_venta)
     {
-        // dd($id);
-        //  return response() -> json($request);  
-        
-          //Validaciones
-          $campos=[
-            'cliente' => ['required', 'string', 'max:191'],
-            'direccion' => ['required', 'string', 'max:191'],
-            'contacto' => ['required', 'string', 'max:14'],
-            'contact2' => ['max:14'],
-            'rut' => ['required', 'string', 'max:13'],
-            'mail' => ['required', 'string','email', 'max:191'],
-            'price' => ['required', 'string', 'max:11'],
-            'dispatchPrice' => ['required', 'string', 'max:11'],
-            'producto' => ['required']
-        ];
-        $Mensaje = ["required" => 'Es requerido'];
-        $this->validate($request, $campos, $Mensaje);
+        try {
+            //Validaciones
+            $campos=[
+                'cliente' => ['required', 'string', 'max:191'],
+                'direccion' => ['required', 'string', 'max:191'],
+                'contacto' => ['required', 'string', 'max:14'],
+                'contact2' => ['max:14'],
+                'rut' => ['required', 'string', 'max:13'],
+                'mail' => ['required', 'string','email', 'max:191'],
+                'price' => ['required', 'string', 'max:11'],
+                'dispatchPrice' => ['required', 'string', 'max:11'],
+                'producto' => ['required']
+            ];
+            $Mensaje = ["required" => 'Es requerido'];
+            $this->validate($request, $campos, $Mensaje);
 
-        $data = request()->except(['_token', '_method']);
+            $data = request()->except(['_token', '_method']);
+            
+            //buscar objeto
+            $venta = Sale::whereId($id_venta)->first();
+            //actualiza
+            $venta -> update([            
+                    'nameClient' => $data['cliente'],
+                    'address' => $data['direccion'],
+                    'contact' => $data['contacto'],
+                    'contactSecond' => $data['contact2'],
+                    'rut' => $data['rut'],
+                    'mail' => $data['mail'],
+                    'paymentMethod' => $data['tipo-pago'],
+                    'status' => $data['status'],
+                    'price' => str_replace(array('.', ','), '' , $data['price']),
+                    'dispatchPrice' => str_replace(array('.', ','), '' , $data['dispatchPrice']),
+                    'users_id' => auth()->id()
+                ]);        
         
+            // actualiza tabla que se encuentra en intermedio con producto
+            $venta -> product() -> sync($data['producto']);            
 
-        $venta = Sale::whereId($id_venta)->first();
-        $venta -> update([            
-                'nameClient' => $data['cliente'],
-                'address' => $data['direccion'],
-                'contact' => $data['contacto'],
-                'contactSecond' => $data['contact2'],
-                'rut' => $data['rut'],
-                'mail' => $data['mail'],
-                'paymentMethod' => $data['tipo-pago'],
-                'status' => $data['status'],
-                'price' => str_replace(array('.', ','), '' , $data['price']),
-                'dispatchPrice' => str_replace(array('.', ','), '' , $data['dispatchPrice']),
-                'users_id' => auth()->id()
-            ]);        
-       
-        // actualiza tabla que se encuentra en intermedio con producto
-        $venta -> product() -> sync($data['producto']);
+            //busco o falla
+            $ModifiedVenta = Sale::findOrFail($id_venta);
+      
+        } catch (\ModelNotFoundException $ex) {
+            return back()->withError($ex->getMessage())->withInput();
         
-
-        if($ModifiedVenta = Sale::findOrFail($id_venta)){
-            return redirect('home') -> with('MensajeUpdate', 'Venta Modificada con exito');
+        } catch (\RelationNotFoundException $ex) {
+            return back()->withError($ex->getMessage() )->withInput();
         }
-        else
-        {
-            return redirect('sale.edit') -> with('MensajeUpdateError', 'Venta No fue Modificada con exito');
-        }
 
-        return response() -> json($ModifiedVenta);  
+        return redirect('sale') -> with('MensajeUpdate', 'Venta Modificada con exito');
+        // return response() -> json($ModifiedVenta);  
 
 
 
@@ -248,7 +330,7 @@ class SaleController extends Controller
     public function insertPrice(Request $request)
     {
 
-        // return "hola";
+        
         $valPrice = 0;
         $value = [];
         $id = null;

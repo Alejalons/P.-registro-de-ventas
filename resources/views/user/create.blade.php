@@ -25,6 +25,14 @@
             </div>
         </div>            
     </div>
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
+            <strong>{{ session('error') }}</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>    
+    @endif
 
 </div>
 @endsection       

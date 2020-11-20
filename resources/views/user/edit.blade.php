@@ -14,7 +14,6 @@
                         <h6 class="font-weight-bold mb-0">Modificación de Usuarios</h6>
                     </div>
                     <div class="card-body">
-                    {{$user}}
                             <form action="{{ route('user.update', $user) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH')}}                                  
@@ -34,6 +33,15 @@
             </div>
         </div>            
     </div>
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
+            <strong>{{ session('error') }}</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>    
+    @endif
 
 </div>
 @endsection   

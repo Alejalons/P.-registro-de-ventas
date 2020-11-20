@@ -40,19 +40,21 @@
 
                 <div class="align-selft-center mt-3 option">
                     <!-- onclick="showNone(this.id)" -->
-                    <a href="{{ route('home') }}"  id="btn-home" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
+                    <a href="{{ route('sale.index') }}"  id="btn-home" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
                             Home</a>
                 </div>            
 
                 <div class="align-selft-center mt-3 option">
-                    <a href="{{ route('sale.index') }}" id="btn-ventas" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
+                    <a href="{{ route('sale.create') }}" id="btn-ventas" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
                             Venta</a>
                 </div>
+                @if(Auth::user()->hasRole('admin'))
+                    <div class="align-selft-center mt-3 option">
+                        <a href="{{ route('user.index') }}"  id="btn-registro" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-users-cog"></i>  
+                                Registrar Usuarios</a>
+                    </div>
+                @endif       
 
-                <div class="align-selft-center mt-3 option">
-                    <a href="{{ route('user.index') }}"  id="btn-registro" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-users-cog"></i>  
-                            Registrar Usuarios</a>
-                </div>
             </div>
 
 
@@ -72,19 +74,20 @@
                             <div class="collapse navbar-collapse" id="navbar">
                             
                                 <div class="align-selft-center mt-3 option">
-                                    <a href="{{ route('home') }}" id="btn-home" class="item text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
+                                    <a href="{{ route('sale.index')  }}" id="btn-home" class="item text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
                                             Home</a>
                                 </div>            
                     
                                 <div class="align-selft-center mt-3 option">
-                                    <a href="{{ route('sale.index') }}" id="btn-venta" class="item  text-dark p-3 d-block  d-lg-none border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
+                                    <a href="{{ route('sale.create') }}" id="btn-venta" class="item  text-dark p-3 d-block  d-lg-none border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
                                             Venta</a>
                                 </div>
-                    
-                                <div class="align-selft-center mt-3 option">
-                                    <a href="{{ route('user.index') }}" id="btn-registro" class="item  text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-users-cog"></i>  
-                                            Registrar Usuarios</a>
-                                </div>                       
+                                @if(Auth::user()->hasRole('admin'))
+                                    <div class="align-selft-center mt-3 option">
+                                        <a href="{{ route('user.index') }}" id="btn-registro" class="item  text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-users-cog"></i>  
+                                                Registrar Usuarios</a>
+                                    </div>                
+                                @endif       
 
                             </div>
 

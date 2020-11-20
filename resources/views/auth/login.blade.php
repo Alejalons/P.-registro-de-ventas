@@ -18,54 +18,77 @@
 
     <div class="row" id="panel">
         <div class="col-12 d-flex justify-content-center align-items-center formulario">
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
+                        <strong>{{ session('error') }}</strong> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>    
+                @endif
             <div class="ingreso-login ">
-                
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                        <div class="contact-form row d-flex justify-content-center">
-                        <div class="form-field col-10  col-lg-7 my-3">
-                            <label for="email" class="label">{{ __('Correo Electrónico') }}</label>
-                            <input id="email" type="email" class="form-control input-text @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-                        <div class="form-field col-10  col-lg-7 my-3 mt-5">
-                            <label for="password" class="label">{{ __('Contraseña') }}</label>
-
-                            <input  id="password"  class="input-text form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="current-password">
-                            @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-                        <div class=" form-field form-group  col-10  col-lg-7 mt-2">
-                            <div class="form-field col-lg-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember" style="color: antiquewhite;">
-                                        Recuerdame
-                                    </label>
+                    @if (Auth::guest())
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+                                <div class="contact-form row d-flex justify-content-center">
+                                <div class="form-field col-10  col-lg-7 my-3">
+                                    <label for="email" class="label">{{ __('Correo Electrónico') }}</label>
+                                    <input id="email" type="email" class="form-control input-text @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                    @error('email')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                    @enderror
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-12 d-flex  justify-content-center ">
-                            <div class="form-field  ">
-                                <button type="submit" class="btn btn-primary submit-btn">
-                                    {{ __('Login') }}
-                                </button>
-                            </div>
-                        </div>
-                        </div>    
-                    
-                  </form>
+                                <div class="form-field col-10  col-lg-7 my-3 mt-5">
+                                    <label for="password" class="label">{{ __('Contraseña') }}</label>
+
+                                    <input  id="password"  class="input-text form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="current-password">
+                                    @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                    @enderror
+                                </div>
+                                <div class=" form-field form-group  col-10  col-lg-7 mt-2">
+                                    <div class="form-field col-lg-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                                            <label class="form-check-label" for="remember" style="color: antiquewhite;">
+                                                Recuerdame
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 d-flex  justify-content-center ">
+                                    <div class="form-field  ">
+                                        <button type="submit" class="btn btn-primary submit-btn">
+                                            {{ __('Login') }}
+                                        </button>
+                                    </div>
+                                </div>
+                                </div>    
+                            
+                        </form>
+                    @else
+                            
+                        <form  action="{{ route('sale.index') }}">
+                            <div class="col-12 d-flex  justify-content-center ">
+                                <div class="form-field  ">
+                                    <h4 for="mensaje" class="label text-light">{{ __('Estas Logeado') }}</h4>
+                                        <br>
+                                    <button type="submit" class="btn btn-primary submit-btn ml-4">
+                                        {{ __('Home') }}
+                                    </button>
+                                </div>
+                            </div>                            
+                        </form>
+                    @endif
+
             </div>
+            
 
     </div>
 

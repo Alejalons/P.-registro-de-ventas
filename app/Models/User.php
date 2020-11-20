@@ -76,4 +76,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
+    public function isAdministrator() {
+        return $this->roles()->where('name', 'admin')->exists();
+     }
+
 }
