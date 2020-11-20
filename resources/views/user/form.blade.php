@@ -11,7 +11,7 @@
             </div>
             <div class="col-12 col-md-6 mb-3">
                 <label for="email">Correo:</label>
-                <input type="email" class="form-control {{ $errors -> has('email') ? 'is-invalid' : '' }}" placeholder="Correo Electrónico" name="email" id="email" value="{{ isset($user -> email) ?  $user -> email : old('name') }}" >
+                <input type="email" class="form-control {{ $errors -> has('email') ? 'is-invalid' : '' }}" placeholder="Correo Electrónico" name="email" id="email" value="{{ isset($user -> email) ?  $user -> email : old('email') }}" >
                 {!! $errors -> first('email', 
                 '<div class="invalid-feedback">
                     :message

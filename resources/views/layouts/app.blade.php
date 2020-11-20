@@ -11,18 +11,16 @@
 
     <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
 
-<!-- 
     <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha1/css/bootstrap.min.css"> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script src="{{ asset('js/es.js') }}"></script>
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
 
+        @yield('css')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="{{ asset('css/all.css') }}" rel="stylesheet">
+
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -42,12 +40,12 @@
 
                 <div class="align-selft-center mt-3 option">
                     <!-- onclick="showNone(this.id)" -->
-                    <a href="#"  id="btn-home" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
+                    <a href="{{ route('home') }}"  id="btn-home" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
                             Home</a>
                 </div>            
 
                 <div class="align-selft-center mt-3 option">
-                    <a href="#" id="btn-ventas" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
+                    <a href="{{ route('sale.index') }}" id="btn-ventas" class="item d-md-block text-light p-3 border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
                             Venta</a>
                 </div>
 
@@ -74,12 +72,12 @@
                             <div class="collapse navbar-collapse" id="navbar">
                             
                                 <div class="align-selft-center mt-3 option">
-                                    <a href="#" id="btn-home" class="item text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
+                                    <a href="{{ route('home') }}" id="btn-home" class="item text-dark d-block  d-lg-none p-3 border-0 lign-selft-center"><i class="fas fa-home"></i> 
                                             Home</a>
                                 </div>            
                     
                                 <div class="align-selft-center mt-3 option">
-                                    <a href="#" id="btn-venta" class="item  text-dark p-3 d-block  d-lg-none border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
+                                    <a href="{{ route('sale.index') }}" id="btn-venta" class="item  text-dark p-3 d-block  d-lg-none border-0 lign-selft-center"><i class="fas fa-shopping-bag"></i>  
                                             Venta</a>
                                 </div>
                     
@@ -138,6 +136,12 @@
 
     <!-- Scripts -->
     
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" ></script>
+    
     @yield('scripts')
+
 </body>
 </html>

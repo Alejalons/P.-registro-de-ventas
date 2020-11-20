@@ -11,8 +11,8 @@
                         <h6 class="font-weight-bold mb-0">Registrar Venta Realizada</h6>
                     </div>
                     <div class="card-body">
-                        <!-- <form action="{{url('/sale')}}" method="post" enctype="multipart/form-data"> -->
-                        <form action="">
+                        <form action="{{url('/sale')}}" method="post" enctype="multipart/form-data">
+                        <!-- <form action=""> -->
                         {{ csrf_field() }}
 
                             @include('sale.form', ['FORM' => 'createSale'])

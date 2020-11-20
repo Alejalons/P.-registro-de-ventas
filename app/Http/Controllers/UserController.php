@@ -52,8 +52,8 @@ class UserController extends Controller
           //Validaciones
         $campos=[
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'string', 'email', 'max:45', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'max:191','confirmed'],
         ];
         $Mensaje = ["required" => 'El :attribute es requerido'];
         $this->validate($request, $campos, $Mensaje);
@@ -103,6 +103,8 @@ class UserController extends Controller
         $role = Role::all();
         $nameRole = implode(', ', $user -> roles() -> get() -> pluck('description')->toArray());
 
+        
+        // return response() -> json($user);
         return view('user.edit', compact(['user', 'nameRole', 'role'])) ;
 
     }
@@ -117,6 +119,8 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         
+        return response() -> json($user);
+
         //   Validaciones
         $validation=[
             'name' => ['required', 'string', 'max:255'],

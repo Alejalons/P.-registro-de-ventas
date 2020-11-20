@@ -14,6 +14,7 @@
                         <h6 class="font-weight-bold mb-0">Modificación de Usuarios</h6>
                     </div>
                     <div class="card-body">
+                    {{$user}}
                             <form action="{{ route('user.update', $user) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH')}}                                  

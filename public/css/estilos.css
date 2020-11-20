@@ -63,4 +63,11 @@ body {
 #registro {
   margin-bottom: 16px; }
 
+#MessageAlert{
+  width: 20%;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
 /*# sourceMappingURL=estilos.css.map */
