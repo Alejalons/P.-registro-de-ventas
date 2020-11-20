@@ -28,6 +28,7 @@
                                 <th>Opciones</th>
                                 <th>Metodo de Pago</th>
                                 <th>Valores</th>
+                                <th>Vendedor</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +69,9 @@
                                         $total = number_format($venta -> price + $venta -> dispatchPrice);
                                     ?> 
                                         Total: {{$total}}
-                                    </td>                             
+                                    </td>  
+                                    <td>{{$venta -> user -> name}}</td>                             
+
                                 </tr>
                             @endforeach
                         </tbody>                    
@@ -130,9 +133,9 @@
                              <select>` +
                              " Registros por página",                             
                 "zeroRecords": "Nada encontrado - lo siento",
-                "info": "Mostrando la página _PAGE_ of _PAGES_",
+                "info": "Mostrando la página _PAGE_ de _PAGES_",
                 "infoEmpty": "No records available",
-                "infoFiltered": "(filtered from _MAX_ total records)",
+                "infoFiltered": "(Filtro de un total de _MAX_ registros)",
                 'search': 'Buscar:',
                 'paginate': {
                     'next': 'Siguiente',

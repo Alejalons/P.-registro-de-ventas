@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Models\User;
 
 class Sale extends Model
 {
@@ -16,5 +17,10 @@ class Sale extends Model
     public function product()
     {
         return $this->belongsToMany(Product::class)->withTimestamps();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 }

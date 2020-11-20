@@ -1,5 +1,7 @@
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    
+
     <style>
     .select2 {
         width:100%!important;
@@ -169,8 +171,12 @@
     @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/es.js') }}"></script>
+    <script src="{{ asset('js/validacionRut.min.js') }}"></script>
+
+    <script type="text/javascript">   
+            //validacion de rut
+            $('#rut').rut();
     
-    <script type="text/javascript">    
             // inicializamos el plugin
             $('.livesearch').select2({
                 // Activamos la opcion "Tags" del plugin

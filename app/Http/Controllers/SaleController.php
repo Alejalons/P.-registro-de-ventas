@@ -47,11 +47,10 @@ class SaleController extends Controller
 
             foreach ($ventas as $venta){
                 $products = $ventas->find($venta -> id);
+                // dd($products);
                 
-                
-                // array_push($product, )
-                //obtengo datos unidos a las ventas
                 $products_name = [];
+                $products->user ->name ;
                 foreach($products -> product  as $product){        
 
                     //obtener id asociado a los producto
@@ -65,6 +64,7 @@ class SaleController extends Controller
                     //encuentra nombre
                     array_push($products_name, $models['name'].' - '.$sets['name']);
                 }
+                // asigna productoNombre al objeto de venta
                 $products->productoNombre =  $products_name;
 
             }
@@ -78,9 +78,9 @@ class SaleController extends Controller
             return back()->withError($ex->getMessage() )->withInput();
         }
            
-       // return view('sale.index' , compact('ventas')) ;
+         return view('sale.index' , compact('ventas')) ;
         
-          return response() -> json($ventas);        
+        //   return response() -> json($ventas);        
     }
 
     /**
