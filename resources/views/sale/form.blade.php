@@ -11,6 +11,10 @@
     {
         margin-left: -15px;
     }
+    #select2-producto-container
+    {
+        display: none;
+    }
     </style>
 @endsection    
 
@@ -75,6 +79,14 @@
                     :message
                 </div>')!!} 
             <select name="producto[]" id="producto" class="form-control livesearch {{ $errors -> has('producto') ? 'is-invalid' : '' }}" onchange="onChange()" multiple="true" required></select>
+                
+            <div id="lisProduct" class="prod row mt-2 ml-2">
+                <table class="">
+                    <tbody>
+                        
+                    </tbody>
+                </table>               
+            </div>
         </div>
     </div>
     <div class="row form-group">
@@ -189,7 +201,7 @@
                     dataType: 'json',
                     delay: 250,
                     processResults: function (data) {
-                        return {
+                        return {                            
                             results: $.map(data, function (item) {
                                 return {
                                     text: item.text,
@@ -199,15 +211,16 @@
                             })
                         };
                     },
-                    cache: true
+                     cache: true
                 }
+                
             });
 
             var valuePrice = 0;                 
 
             function onChange() {
 
-
+                $("#lisProduct table tbody tr").remove();
 
                 //obtengo los tags li que se encuentran disponible
                 var titleLi = [];
@@ -217,42 +230,63 @@
 
               
                 var id_price = [];
-                
-                //
+                var obj = [];
                 for (let x = 0; x < titleLi.length; x++) 
                 {                    
                     var id_prod =  document.getElementById('producto').options;    
 
                       //obtiene los option ingresados -> captura su id para almacenar en un
                       //                                 array y asi poder consultar el precio por cada id
+                      //compara con los existentes y las opciones que se encuentran, 
                     for (let i = 0; i < id_prod.length; i++) 
                     {
                         if(titleLi[x] == id_prod[i].text)
                         {
-                            id_price.push(id_prod[i].value);
+                            $("#lisProduct table tbody").append("<tr><td>"+id_prod[i].text+"</td><td><input type='number' style='width:40px;' class='inputCant' onChange='onChangeCant()' title="+id_prod[i].value+" id="+id_prod[i].value+"cant value='1'></td></tr>");                            
+                            
+                            cantidad = document.getElementById(id_prod[i].value+'cant').value;
+                            
+                            objeto ={"Id":id_prod[i].value,"cantidad":cantidad};
+
+                            obj.push(objeto);
+
+                            // id_price.push(id_prod[i].value);
                         }
                     }
-                }   
+                }               
 
-                if(id_price.length > 0){
+                 sendinsertPrice(obj);
+            }
+
+            function onChangeCant(){
+                var inputCant = document.getElementsByClassName("inputCant");
+
+                var objinputs = [];
+                for (let i = 0; i < inputCant.length; i++) 
+                {
+                    objValue ={"Id":inputCant[i].title,"cantidad":inputCant[i].value};
+                    objinputs.push(objValue);
+                }
+                sendinsertPrice(objinputs);
+
+            }
+
+            function sendinsertPrice(obj)
+            {
+                if(obj.length > 0){
                     //consulta en price_ajax donde se calcula total precio segun id enviado
                     $.ajax({
                         url: '/price_ajax',
-                        method: 'get',
-                        data: {
-                            id: id_price
-                        }
+                        contentType: "application/json",
+                        type: 'get',
+                        data: {'array': JSON.stringify(obj)}
 
                     }).done(function(res){
-
-                        console.log(res);                   
 
                         var price = formatNumber(res);
                         $("#price").val(price);                    
                     });
                 }
-                
-
             }
 
 

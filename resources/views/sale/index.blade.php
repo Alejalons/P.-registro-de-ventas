@@ -56,9 +56,8 @@
                                         <a class="btn btn-warning fas fa-edit" style="background: rgb(241,163,19); width: 40px" href="{{  url('sale/'.$venta -> id.'/edit')  }}"></a> 
                                     </div>
                                     <div>
-                                         <form action="{{ route('sale.destroy', $venta) }}" method="post">{{ csrf_field() }}{{ method_field('DELETE')}}<button type="submit" class="btn btn-danger fas fa-trash-alt"  onclick="return confirm('borar??');" ></button></form>
+                                         <form action="{{ route('sale.destroy', $venta -> id) }}" method="post">{{ csrf_field() }}{{ method_field('DELETE')}}<button type="submit" class="btn btn-danger fas fa-trash-alt"  onclick="return confirm('borar??');" ></button></form>
                                     </div>
-                                    <!-- <form action="{{ route('sale.edit', $venta -> id) }}" method="post">{{ csrf_field() }}{{ method_field('GET|HEAD')}}<button type="submit" class="btn btn-warning fas fa-edit" ></button></form> -->
                                     </div>
                                     </td>  
                                     <td>{{$venta -> paymentMethod}}</td>                             
@@ -91,6 +90,14 @@
     @if(Session::has('MensajeCreacion'))
         <div class="alert alert-success alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
             <strong>{{Session::get('MensajeCreacion')}}</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>    
+    @endif
+    @if(Session::has('MsjSaleDelete'))
+        <div class="alert alert-success alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
+            <strong>{{Session::get('MsjSaleDelete')}}</strong> 
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>

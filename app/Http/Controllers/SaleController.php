@@ -293,9 +293,28 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id_venta)
     {
-        //
+        try {
+
+            $venta = Sale::whereId($id_venta)->first();
+            $venta -> product() -> detach();
+            $venta -> delete();
+             
+        } catch (\Throwable $th) {
+            return back()->withError($th->getMessage() )->withInput();
+        
+        } catch (\ModelNotFoundException $ex) {
+            return back()->withError($ex->getMessage())->withInput();
+        
+        } catch (\RelationNotFoundException $ex) {
+            return back()->withError($ex->getMessage() )->withInput();
+        }
+
+        return redirect('sale') -> with('MsjSaleDelete', 'Venta Eliminada con exito');
+
+        // return response() -> json($venta);  
+
     }
 
 
@@ -315,7 +334,7 @@ class SaleController extends Controller
 
                 foreach($products_sets -> sets  as $set){        
 
-                    $text=$model -> name. ' | '.$set->name . ' ('.$set->pivot->price.')' ;
+                    $text=$model -> name. ' | '.$set->name ;
                     $data[] = ['id' => $set->pivot->id, 'text' => $text , 'price' => $set->pivot->price ];
                 }
             
@@ -328,28 +347,31 @@ class SaleController extends Controller
 
     //envia suma de cantidad de productos
     public function insertPrice(Request $request)
-    {
-
+    {   
+        
+        $data = json_decode($request['array']);
+        // return response()->json($data[0]->Id);
         
         $valPrice = 0;
         $value = [];
         $id = null;
-        if($request->has('id')){
+        // if($request->has('id')){
 
-            $id = $request->id;
+            // $id = $request->id;
 
-            for ($i=0; $i < count($id); $i++) { 
+            for ($i=0; $i < count($data); $i++) { 
 
                 $value = Product::select("price")
-                                ->where('id', '=', "$id[$i]")
+                                ->where('id', '=', $data[$i]->Id)
                                 ->get();
 
-                $valPrice += $value[0] -> price;
+                $precioCant = $value[0]->price * $data[$i]->cantidad;
+                $valPrice += $precioCant;
             }
 
-        }
+        // }
 
-        return response()->json($valPrice);
+         return response()->json($valPrice);
         
     }
 }
