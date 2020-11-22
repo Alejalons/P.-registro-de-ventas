@@ -64,8 +64,9 @@ class SaleController extends Controller
                     //encuentra nombre
                     array_push($products_name, $models['name'].' - '.$sets['name']);
                 }
+                // dd(array_count_values($products_name));
                 // asigna productoNombre al objeto de venta
-                $products->productoNombre =  $products_name;
+                $products->productoNombre =  array_count_values($products_name);
 
             }
         } catch (\Throwable $th) {
@@ -78,9 +79,10 @@ class SaleController extends Controller
             return back()->withError($ex->getMessage() )->withInput();
         }
            
+
          return view('sale.index' , compact('ventas')) ;
+         return response() -> json($ventas);        
         
-        //   return response() -> json($ventas);        
     }
 
     /**
@@ -102,8 +104,9 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
+        // return response()->json($request);
+
         try {
-            // return response()->json($request);
             //Validaciones
             $campos=[
                 'cliente' => ['required', 'string', 'max:191'],
@@ -138,9 +141,14 @@ class SaleController extends Controller
             
             // inserta todos los id entregados por el array de productos
             for ($i=0; $i < count($data['producto']) ; $i++) 
-            {            
-                //inserta en sale_product id de la venta mas id de los productos
-                $product->product()->attach(Product::where('id', $data['producto'][$i])->first());
+            {   
+                //se insertara las cantidad por cada producto
+                for($e=0; $e < $data['cantProduct'][$i]; $e++)
+                {
+                    //inserta en sale_product id de la venta mas id de los productos
+                    $product->product()->attach(Product::where('id', $data['producto'][$i])->first());   
+                }         
+                
             }
         
         } catch (\ModelNotFoundException $ex) {
@@ -200,9 +208,9 @@ class SaleController extends Controller
                     $sets = Set::find($id_set);                
 
                     //encuentra nombre
-                    array_push($products_name, $models['name'].' - '.$sets['name']);
+                    array_push($products_name, 'p='.$models['name'].' - '.$sets['name'].'id='.$product->id);
                 }
-                $products->productoNombre =  $products_name;
+                $products->productoNombre =  array_count_values($products_name);
 
             }
             
@@ -219,8 +227,9 @@ class SaleController extends Controller
             return back()->withError($ex->getMessage() )->withInput();
         }
 
-        // return response() -> json($venta);  
         return view('sale.edit', compact('venta')) ;
+        return response() -> json($venta);  
+
     }
 
     /**
@@ -232,6 +241,10 @@ class SaleController extends Controller
      */
     public function update(Request $request,  $id_venta)
     {
+        
+        
+        // return response() -> json($request);  
+
         try {
             //Validaciones
             $campos=[
@@ -242,8 +255,7 @@ class SaleController extends Controller
                 'rut' => ['required', 'string', 'max:13'],
                 'mail' => ['required', 'string','email', 'max:191'],
                 'price' => ['required', 'string', 'max:11'],
-                'dispatchPrice' => ['required', 'string', 'max:11'],
-                'producto' => ['required']
+                'dispatchPrice' => ['required', 'string', 'max:11']
             ];
             $Mensaje = ["required" => 'Es requerido'];
             $this->validate($request, $campos, $Mensaje);
@@ -265,10 +277,38 @@ class SaleController extends Controller
                     'price' => str_replace(array('.', ','), '' , $data['price']),
                     'dispatchPrice' => str_replace(array('.', ','), '' , $data['dispatchPrice']),
                     'users_id' => auth()->id()
-                ]);        
-        
-            // actualiza tabla que se encuentra en intermedio con producto
-            $venta -> product() -> sync($data['producto']);            
+                ]); 
+
+            if(isset($data['producto'])){
+                // actualiza tabla que se encuentra en intermedio con producto
+                $venta -> product() -> detach();
+                for ($i=0; $i < count($data['producto']) ; $i++) 
+                {   
+                    //se insertara las cantidad por cada producto
+                    for($e=0; $e < $data['cantProduct'][$i]; $e++)
+                    {
+                        $venta -> product() -> attach($data['producto'][$i]);   
+                    }
+                }
+            }
+            else
+            {
+                $venta -> product() -> detach();
+                for ($i=0; $i < count($data['cantProduct']) ; $i++) { 
+
+                    foreach ($data['cantProduct'][$i] as $key => $value) 
+                    {
+                        // dd($key);
+                        for($e=0; $e < $value ; $e++)
+                        {
+                            $venta -> product() -> attach($key);  
+                                    
+                        }
+                    }
+                }
+                
+            }
+                     
 
             //busco o falla
             $ModifiedVenta = Sale::findOrFail($id_venta);
@@ -281,7 +321,6 @@ class SaleController extends Controller
         }
 
         return redirect('sale') -> with('MensajeUpdate', 'Venta Modificada con exito');
-        // return response() -> json($ModifiedVenta);  
 
 
 
@@ -373,5 +412,32 @@ class SaleController extends Controller
 
          return response()->json($valPrice);
         
+    }
+
+    //recortar string
+// after ('@', 'biohazard@online.ge');
+// //returns 'online.ge'
+// //from the first occurrence of '@'
+
+// before ('@', 'biohazard@online.ge');
+// //returns 'biohazard'
+// //from the first occurrence of '@'
+    public static function after ($e, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $e))){
+            return substr($inthat, strpos($inthat,$e)+strlen($e));
+        }
+    }
+
+    public static function before ($e, $inthat)
+    {
+        return substr($inthat, 0, strpos($inthat, $e));
+    }
+
+    public static function strrevpos($instr, $needle)
+    {
+        $rev_pos = strpos (strrev($instr), strrev($needle));
+        if ($rev_pos===false) return false;
+        else return strlen($instr) - $rev_pos - strlen($needle);
     }
 }

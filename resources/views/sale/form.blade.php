@@ -74,16 +74,34 @@
     <div class="form-group">
         <div class="divProduct col-12 col-md-10 col-lg-12 mb-3"> 
             <label for="producto">Producto:</label>
+            <?php use app\Http\Controllers\SaleController;?>
+
             {!! $errors -> first('producto', 
                 '<div class="invalid-feedback">
                     :message
                 </div>')!!} 
-            <select name="producto[]" id="producto" class="form-control livesearch {{ $errors -> has('producto') ? 'is-invalid' : '' }}" onchange="onChange()" multiple="true" required></select>
+            <select name="producto[]" id="producto" class="form-control livesearch {{ $errors -> has('producto') ? 'is-invalid' : '' }}" onchange="onChange()" multiple="true" 
+            @if($FORM != "editSale")
+                required
+            @endif>                
+                @if($FORM == "editSale")
+                    @foreach ($venta -> productoNombre as $item => $value)
+                        <option value="{{SaleController::after('id=', $item)}}">{{SaleController::before('id=',SaleController::after('p=', $item))}}</option>
+                    @endforeach
+                @endif  
+            </select>
                 
             <div id="lisProduct" class="prod row mt-2 ml-2">
                 <table class="">
                     <tbody>
-                        
+                        @if($FORM == "editSale")
+                            @foreach ($venta -> productoNombre as $item => $value)
+                                    <tr id="{{SaleController::after('id=', $item)}}">                                    
+                                        <td><li class="fas fa-trash-alt" style="cursor: pointer;" onclick="deleteInput({{SaleController::after('id=', $item)}})"></li> {{SaleController::before('id=',SaleController::after('p=', $item))}}</td>
+                                        <td><input type='number' style='width:40px;'  name='cantProduct[][{{SaleController::after('id=', $item)}}]' class='inputCant' onChange='onChangeCant()' title="{{SaleController::after('id=', $item)}}" id="{{SaleController::after('id=', $item)}}cant" value='{{$value}}'></td>
+                                    </tr>
+                            @endforeach
+                        @endif                        
                     </tbody>
                 </table>               
             </div>
@@ -135,40 +153,22 @@
                 <label class="btn btn-info active border border-light">
                     <input type="radio" name="status" id="optionPagado" 
                         @if($FORM == "editSale")
-                            @if($venta -> status == "Pagado")
+                            @if($venta -> status == "Por Pagar")
                                 checked
                             @endif
                         @else
                              checked
                         @endif
+                    value="Por Pagar"> Por Pagar
+                </label>
+                <label class="btn btn-info active border border-light">
+                    <input type="radio" name="status" id="optionPagado" 
+                        @if($FORM == "editSale")
+                            @if($venta -> status == "Pagado")
+                                checked
+                            @endif
+                        @endif
                     value="Pagado"> Pagado
-                </label>
-                <label class="btn btn-info border border-light">
-                    <input type="radio" name="status" id="optionEnviado" 
-                        @if($FORM == "editSale")
-                            @if($venta -> status == "Enviado")
-                                checked
-                            @endif
-                        @endif                    
-                    value="Enviado"> Enviado
-                </label>
-                <label class="btn btn-info border border-light">
-                    <input type="radio" name="status" id="optionDespachado" 
-                        @if($FORM == "editSale")
-                            @if($venta -> status == "Despachado")
-                                checked
-                            @endif
-                        @endif                        
-                    value="Despachado"> Despachado
-                </label>
-                <label class="btn btn-info border border-light">
-                    <input type="radio" name="status" id="optionDespachado" 
-                        @if($FORM == "editSale")
-                            @if($venta -> status == "Entregado")
-                                checked
-                            @endif
-                        @endif  
-                    value="Entregado"> Entregado
                 </label>
             </div>
         </div>
@@ -180,139 +180,10 @@
     
 
 
-    @section('scripts')
+@section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/es.js') }}"></script>
     <script src="{{ asset('js/validacionRut.min.js') }}"></script>
-
-    <script type="text/javascript">   
-            //validacion de rut
-            $('#rut').rut();
-    
-            // inicializamos el plugin
-            $('.livesearch').select2({
-                // Activamos la opcion "Tags" del plugin
-                tags: true,
-                placeholder: "Ingrese Producto a Buscar",
-                tokenSeparators: [','],
-                language: "es",
-                ajax: {
-                    url: '/search_ajax',
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {                            
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.text,
-                                    $precio: item.price,
-                                    id: item.id                                    
-                                }
-                            })
-                        };
-                    },
-                     cache: true
-                }
-                
-            });
-
-            var valuePrice = 0;                 
-
-            function onChange() {
-
-                $("#lisProduct table tbody tr").remove();
-
-                //obtengo los tags li que se encuentran disponible
-                var titleLi = [];
-                $("#select2-producto-container li").each(function(){
-                    titleLi.push($(this).attr('title'));
-                });
-
-              
-                var id_price = [];
-                var obj = [];
-                for (let x = 0; x < titleLi.length; x++) 
-                {                    
-                    var id_prod =  document.getElementById('producto').options;    
-
-                      //obtiene los option ingresados -> captura su id para almacenar en un
-                      //                                 array y asi poder consultar el precio por cada id
-                      //compara con los existentes y las opciones que se encuentran, 
-                    for (let i = 0; i < id_prod.length; i++) 
-                    {
-                        if(titleLi[x] == id_prod[i].text)
-                        {
-                            $("#lisProduct table tbody").append("<tr><td>"+id_prod[i].text+"</td><td><input type='number' style='width:40px;' class='inputCant' onChange='onChangeCant()' title="+id_prod[i].value+" id="+id_prod[i].value+"cant value='1'></td></tr>");                            
-                            
-                            cantidad = document.getElementById(id_prod[i].value+'cant').value;
-                            
-                            objeto ={"Id":id_prod[i].value,"cantidad":cantidad};
-
-                            obj.push(objeto);
-
-                            // id_price.push(id_prod[i].value);
-                        }
-                    }
-                }               
-
-                 sendinsertPrice(obj);
-            }
-
-            function onChangeCant(){
-                var inputCant = document.getElementsByClassName("inputCant");
-
-                var objinputs = [];
-                for (let i = 0; i < inputCant.length; i++) 
-                {
-                    objValue ={"Id":inputCant[i].title,"cantidad":inputCant[i].value};
-                    objinputs.push(objValue);
-                }
-                sendinsertPrice(objinputs);
-
-            }
-
-            function sendinsertPrice(obj)
-            {
-                if(obj.length > 0){
-                    //consulta en price_ajax donde se calcula total precio segun id enviado
-                    $.ajax({
-                        url: '/price_ajax',
-                        contentType: "application/json",
-                        type: 'get',
-                        data: {'array': JSON.stringify(obj)}
-
-                    }).done(function(res){
-
-                        var price = formatNumber(res);
-                        $("#price").val(price);                    
-                    });
-                }
-            }
-
-
-            //setea los numeros por numeros en miles
-            function formatNumber (n) 
-            {
-                n = String(n).replace(/\D/g, "");
-                return n === '' ? n : Number(n).toLocaleString();
-            }            
-
-            const number = document.querySelector('#price');
-            number.addEventListener('keyup', (e) => {
-                const element = e.target;
-                const value = element.value;
-                element.value = formatNumber(value);
-            });
-
-            const valorDespacho = document.querySelector('#dispatchPrice');
-            valorDespacho.addEventListener('keyup', (e) => {
-                const element = e.target;
-                const value = element.value;
-                element.value = formatNumber(value);
-            });
-
-
-         
-    </script>
+    <script src="{{ asset('js/form.js') }}"></script>
 @endsection
   

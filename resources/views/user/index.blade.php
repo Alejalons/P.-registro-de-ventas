@@ -14,15 +14,21 @@
             <div class="card-body">
                 <h5 class="card-title">Cargo:  {{ implode(', ', $user -> roles() -> get() -> pluck('name')->toArray()) }}</h5>
                 <p class="card-text">{{$user -> email}}</p>
-                <div class="row d-flex justify-content-between">
-                    <a class="btn btn-warning" style="background: rgb(241,163,19);" href="{{  url('user/'.$user -> id.'/edit')  }}">Modificar</a> 
-                                |                     
-                    <form action="{{ route('user.destroy', $user) }}" method="post">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE')}}   
+                <div class="row ">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a class="btn btn-warning fas fa-edit" style="background: rgb(241,163,19);  width: 40px;" href="{{  url('user/'.$user -> id.'/edit')  }}"></a> 
+                        </div>
+                        <div>   
+                            <form action="{{ route('user.destroy', $user) }}" method="post">
+                                {{ csrf_field() }}
+                                {{ method_field('DELETE')}}   
 
-                        <button type="submit" class="btn btn-danger"  onclick="return confirm('borar??');" >Eliminar</button>
-                    </form>
+                                <button type="submit" class="btn btn-danger fas fa-trash-alt"  style="" onclick="return confirm('¿Eliminar Usuario?');" ></button>
+                            </form>                
+                        </div> 
+                    </div>                                                                   
+                    
                 </div>
             </div>
         </div>

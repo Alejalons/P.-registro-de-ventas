@@ -2,6 +2,7 @@
 
 @section('content')
  
+<?php use app\Http\Controllers\SaleController;?>
     
     <div id="ventas" class="ventas w-100">
         <div class="row ml-3 mb-5" >
@@ -29,9 +30,9 @@
                         <h6 class="font-weight-bold mb-0">Productos Antiguos</h6>
                     </div>
                     <div class="card-body">
-                        @for($i=0; $i < count($venta -> productoNombre); $i++)
-                            <p>{{$venta -> productoNombre[$i]}}</p>
-                        @endfor
+                        @foreach ($venta -> productoNombre as $item => $value)
+                                <li>{{SaleController::before('id=',SaleController::after('p=', $item))}} x {{$value}} </li>
+                        @endforeach
 
                     </div>
                 </div>

@@ -11,12 +11,11 @@
 
    
 
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-12">
-            <div class="card">
+    <div class="row justify-content-center mb-5 col-12 col-sm-12 col-md-11 col-lg-12">
+            <div class="card ">
                 <div class="card-header">{{ __('Ventas Realizadas') }}</div>
                 <div class="card-body">
-                    <table class="table table-striped"  id="listProducts">
+                    <table class="table table-striped responsive display nowrap"  id="listProducts" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Nombre Cliente</th>
@@ -25,10 +24,10 @@
                                 <th>Contactos</th>
                                 <th>Productos</th>
                                 <th>Estado</th>
-                                <th>Opciones</th>
                                 <th>Metodo de Pago</th>
                                 <th>Valores</th>
                                 <th>Vendedor</th>
+                                <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,22 +43,12 @@
                                         {{$venta -> mail}}
                                     </td>                             
                                     <td>
-                                        @for($i=0; $i < count($venta -> productoNombre); $i++) 
-                                                <li>{{$venta -> productoNombre[$i]}}</li>
-                                                <br>
-                                        @endfor
+                                        @foreach ($venta -> productoNombre as $item => $value)
+                                                <li>{{$item}} x {{$value}} </li>
+                                        @endforeach
                                     </td>                             
                                     <td>{{$venta -> status}}</td>                             
-                                    <td>
-                                    <div class="row d-flex justify-content-start">
-                                    <div>
-                                        <a class="btn btn-warning fas fa-edit" style="background: rgb(241,163,19); width: 40px" href="{{  url('sale/'.$venta -> id.'/edit')  }}"></a> 
-                                    </div>
-                                    <div>
-                                         <form action="{{ route('sale.destroy', $venta -> id) }}" method="post">{{ csrf_field() }}{{ method_field('DELETE')}}<button type="submit" class="btn btn-danger fas fa-trash-alt"  onclick="return confirm('borar??');" ></button></form>
-                                    </div>
-                                    </div>
-                                    </td>  
+                                     
                                     <td>{{$venta -> paymentMethod}}</td>                             
 
                                     <td>
@@ -69,7 +58,20 @@
                                     ?> 
                                         Total: {{$total}}
                                     </td>  
-                                    <td>{{$venta -> user -> name}}</td>                             
+                                    <td>{{$venta -> user -> name}}</td>    
+
+                                    <td>
+                                        <div class="row ">
+                                            <div class="d-flex justify-content-start">
+                                                <div>
+                                                    <a class="btn btn-warning fas fa-edit" style="background: rgb(241,163,19); width: 40px" href="{{  url('sale/'.$venta -> id.'/edit')  }}"></a> 
+                                                </div>
+                                                <div>
+                                                    <form action="{{ route('sale.destroy', $venta -> id) }}" method="post">{{ csrf_field() }}{{ method_field('DELETE')}}<button type="submit" class="btn btn-danger fas fa-trash-alt"  onclick="return confirm('¿Eliminar Venta?');" ></button></form>
+                                                </div>
+                                            </div>                                    
+                                        </div>
+                                    </td>                          
 
                                 </tr>
                             @endforeach
@@ -77,7 +79,6 @@
                     </table>    
                 </div>    
             </div>
-        </div>
     </div>
     @if(Session::has('MensajeUpdate'))
         <div class="alert alert-success alert-dismissible fade show mb-5 mx-5" id="MessageAlert" role="alert">
@@ -127,7 +128,7 @@
     
     <script> 
         $('#listProducts').DataTable({
-            responsive: true,
+            "responsive": true,
             autoWith: false,
             "language": {
                 "lengthMenu": "Mostrar "+
