@@ -35,7 +35,7 @@
             <div id="sidebar-container" class="col-2 sidebar-container  d-none d-sm-none  d-md-none  d-lg-block">
 
                 <div class="col bg-muted flex-column logo d-none d-xl-block mt-2">
-                    <img src="{{ asset('img/logo-bestbeds.PNG') }}" alt="">
+                    <img src="{{ asset('') }}" alt="">
                 </div>
 
                 <div class="align-selft-center mt-3 option">
@@ -94,7 +94,7 @@
 
                         <ul class="navbar-nav mr-auto align-self-sm-center order-3 order-sm-2">
                             <div class="lign-selft-center mx-5 mt-2 d-block d-lg-none d-md-block">
-                                <img src="{{ asset('img/logo-bestbeds.PNG') }}" id="logo-bestbeds" alt="">
+                                <img src="{{ asset('') }}" id="logo" alt="">
                             </div>
                         </ul>
                         
